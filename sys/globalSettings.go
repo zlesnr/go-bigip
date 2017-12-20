@@ -1,4 +1,4 @@
-package bigip
+package sys
 
 type GlobalSettings struct {
 	Kind                            string `json:"kind,omitempty"`
