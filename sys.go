@@ -6,6 +6,7 @@ const (
 	uriVolume         = "volume"
 	uriHardware       = "hardware"
 	uriGlobalSettings = "global-settings"
+	uriManagementIp   = "management-ip"
 	//uriPlatform = "?$select=platform"
 )
 
@@ -35,6 +36,27 @@ func (b *BigIP) Volumes() (*Volumes, error) {
 	}
 
 	return &volumes, nil
+}
+
+type ManagementIP struct {
+	Addresses []ManagementIPAddress
+}
+
+type ManagementIPAddress struct {
+	Name       string `json:"items,omitempty"`
+	FullPath   string `json:"fullPath,omitempty"`
+	Generation int    `json:"generation,omitempty"`
+	SelfLink   string `json:"selfLink,omitempty"`
+}
+
+func (b *BigIP) ManagementIPs() (*ManagementIP, error) {
+	var managementIP ManagementIP
+	err, _ := b.getForEntity(&managementIP, uriSys, uriManagementIp)
+	if err != nil {
+		return nil, err
+	}
+
+	return &managementIP, nil
 }
 
 // type Hardware struct {
