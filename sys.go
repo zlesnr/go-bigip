@@ -2,6 +2,7 @@ package bigip
 
 const (
 	uriSys            = "sys"
+	uriSyslog         = "syslog"
 	uriSoftware       = "software"
 	uriVolume         = "volume"
 	uriHardware       = "hardware"
@@ -59,9 +60,29 @@ func (b *BigIP) ManagementIPs() (*ManagementIP, error) {
 	return &managementIP, nil
 }
 
-// type Hardware struct {
-// 	Entries []HardwareEntry `json:"entries,omitempty"`
-// }
-//
-// type HardwareEntry struct {
-// }
+type SyslogRemoteServer struct {
+	Name       string `json:"name,omitempty"`
+	Host       string `json:"host,omitempty"`
+	LocalIP    string `json:"localIp,omitempty"`
+	RemotePort int    `json:"remotePort,omitempty"`
+}
+
+type Syslog struct {
+	SelfLink      string               `json:"selfLink,omitempty"`
+	RemoteServers []SyslogRemoteServer `json:"remoteServers,omitempty"`
+}
+
+func (b *BigIP) Syslog() (*Syslog, error) {
+	var syslog Syslog
+
+	err, _ := b.getForEntity(&syslog, uriSys, uriSyslog)
+	if err != nil {
+		return nil, err
+	}
+
+	return &syslog, nil
+}
+
+func (b *BigIP) SetSyslog(config Syslog) error {
+	return b.put(config, uriSys, uriSyslog)
+}
